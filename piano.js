@@ -11,11 +11,11 @@
     var notesOffset = 0;
 
     var blackKeys = {
-        1: 1,
-        3: 3,
-        6: 1,
-        8: 2,
-        10: 3
+        1: 1, //w
+        3: 3, //e
+        6: 1, //t
+        8: 2, //y
+        10: 3 //u
     };
     $.each(blackKeys, function(k, v) {
         blackKeys[k] = ' black black'+v;;
@@ -51,6 +51,9 @@
             var pressedTimeout;
             dataURI = null;
             function play(evt) {
+                var meow = new Audio('meow.wav');
+                //meow.play();
+
                 // sound
                 sounds[curSound].pause();
                 try {
@@ -58,6 +61,7 @@
                 } catch (x) {
                     console.log(x);
                 }
+
                 sounds[curSound].play();
                 curSound = ++curSound % sounds.length;
 
@@ -71,6 +75,7 @@
                 pressedTimeout = window.setTimeout(function() {
                     $k.removeClass('pressed');
                 }, 200);
+
             }
             $keys.on('note-'+i+'.play', play);
             var $key = $('<div>', {
@@ -78,6 +83,10 @@
                 'data-key': i,
                 mousedown: function(evt) { $keys.trigger('note-'+i+'.play'); }
             }).appendTo($keys);
+
+            // $keys.on('meow', function(){
+            //   //plays audio file
+            // })
         }
 
         // delayed for-loop to stop browser from crashing :'(
@@ -174,9 +183,25 @@
         if (!downKeys[keyCode] && !isModifierKey(evt)) {
             downKeys[keyCode] = 1;
             var key = keyNotes[keyCode];
+            // var meow = new Audio('meow.wav');
+
             if (typeof key != 'undefined') {
-                $keys.trigger('note-'+(key+notesShift+notesOffset)+'.play');
-                evt.preventDefault();
+              //d,e,a,b,a#
+
+                if (key===2||key===4||key===9||key===10||key===11||key===14||key===16 ) {
+                  $keys.trigger('note-'+(key+notesShift+notesOffset)+'.play');
+                  $keys.trigger('note-'+(key+3+notesShift+notesOffset)+'.play');
+                  // meow.play();
+                  evt.preventDefault();
+
+                }else{
+                  $keys.trigger('note-'+(key+notesShift+notesOffset)+'.play');
+                  $keys.trigger('note-'+(key+4+notesShift+notesOffset)+'.play');
+                  meow.play();
+                  evt.preventDefault();
+                }
+
+
             } else if (evt.keyCode == 188) {
                 notesShift = -12;
             } else if (evt.keyCode == 190) {
